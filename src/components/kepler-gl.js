@@ -22,7 +22,7 @@ import React, {Component} from 'react';
 import {console as Console} from 'global/window';
 import {bindActionCreators} from 'redux';
 import {json as requestJson} from 'd3-request';
-import styled, {ThemeProvider}  from 'styled-components';
+import styled, {ThemeProvider, withTheme}  from 'styled-components';
 import {connect as keplerGlConnect} from 'connect/keplergl-connect';
 import {isValidStyleUrl, getStyleDownloadUrl} from 'utils/map-style-utils/mapbox-gl-style-editor';
 
@@ -43,7 +43,7 @@ import NotificationPanelFactory from './notification-panel';
 
 import {generateHashId} from 'utils/utils';
 
-import {theme} from 'styles/base';
+import {theme as basicTheme} from 'styles/base';
 
 // Maybe we should think about exporting this or creating a variable
 // as part of the base.js theme
@@ -274,7 +274,10 @@ function KeplerGlFactory(
       const isExporting = uiState.currentModal === EXPORT_IMAGE_ID;
 
       return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={{
+          ...basicTheme,
+          ...this.props.theme
+        }}>
           <GlobalStyle
             style={{
               position: 'relative',
@@ -331,7 +334,7 @@ function KeplerGlFactory(
     }
   }
 
-  return keplerGlConnect(mapStateToProps, mapDispatchToProps)(KeplerGL);
+  return keplerGlConnect(mapStateToProps, mapDispatchToProps)(withTheme(KeplerGL));
 }
 
 function mapStateToProps(state, props) {
